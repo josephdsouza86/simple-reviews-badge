@@ -251,7 +251,7 @@ add_action( 'wp_ajax_nopriv_grb_get_reviews', 'grb_ajax_get_reviews' );
  * Enqueue plugin styles
  */
 function grb_enqueue_styles() {
-	wp_enqueue_style( 'grb-styles', plugin_dir_url( FILE ) . 'css/grb-styles.min.css' );
+	wp_enqueue_style( 'grb-styles', plugin_dir_url( __FILE__ ) . 'css/grb-styles.min.css' );
 }
 add_action( 'wp_enqueue_scripts', 'grb_enqueue_styles' );
 
