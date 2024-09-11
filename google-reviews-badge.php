@@ -48,27 +48,36 @@ add_action( 'admin_init', 'grb_register_settings' );
  * @param array $atts Shortcode attributes
  * @return string HTML output
  */
-function grb_fetch_and_display_reviews( $atts ) {
-    // Extract shortcode attributes with default
+function grb_fetch_and_display_reviews($atts) {
+    // Extract shortcode attributes
     $atts = shortcode_atts(
         array(
             'img_src' => grb_get_option('grb_img_src'),
-            'include_schema' => false, // New default for the include_schema attribute
+            'include_schema' => false,
         ),
         $atts
     );
 
-    // Get settings from admin
+    // Return a placeholder that will be replaced by AJAX
+    return '<div class="review-box-ajax">' . __('Loading reviews...', 'google-reviews-badge') . '</div>';
+}
+
+/**
+ * Generate HTML for the Google Reviews.
+ *
+ * @return string HTML output for the reviews
+ */
+function grb_generate_review_html() {
+    // Fetch review data (the same way you currently do it)
     $place_id = grb_get_option('grb_place_id');
     $api_key = grb_get_option('grb_api_key');
     $cache_duration = grb_get_option('grb_cache_duration');
     $review_link = grb_get_option('grb_review_link');
-
-    // Check if transient exists
-    $cached_data = get_transient( 'google_reviews_data' );
+    
+    $transient_key = 'google_reviews_data_' . md5($place_id);
+    $cached_data = get_transient($transient_key);
 
     if (false === $cached_data) {
-        // Fetch reviews from Google Places API
         $api_url = 'https://maps.googleapis.com/maps/api/place/details/json?place_id=' . urlencode($place_id) . '&fields=rating,user_ratings_total&key=' . urlencode($api_key);
         $response = wp_remote_get($api_url);
 
@@ -82,7 +91,6 @@ function grb_fetch_and_display_reviews( $atts ) {
         $data = wp_remote_retrieve_body($response);
         $data = json_decode($data, true);
 
-        // Check for a valid response from Google API
         if (!isset($data['result'])) {
             $error_message = 'Invalid response from Google Reviews API: ' . json_encode($data);
             grb_log_to_console($error_message);
@@ -90,11 +98,10 @@ function grb_fetch_and_display_reviews( $atts ) {
             return ''; // Return nothing to prevent display on the page
         }
 
-        // Cache the data on successful API response
         $aggregateRating = isset($data['result']['rating']) ? floatval($data['result']['rating']) : 0;
         $reviewCount = isset($data['result']['user_ratings_total']) ? intval($data['result']['user_ratings_total']) : 0;
 
-        // Store data in transient, increase the expiry if successful
+        // Cache the data
         set_transient($transient_key, ['rating' => $aggregateRating, 'count' => $reviewCount], $cache_duration);
     } else {
         $aggregateRating = $cached_data['rating'];
@@ -206,12 +213,51 @@ function grb_get_star_svg( $i, $aggregateRating ) {
 }
 
 /**
+ * Handle AJAX request to fetch Google Reviews.
+ */
+function grb_ajax_get_reviews() {
+    check_ajax_referer('grb_ajax_nonce', 'nonce'); // Security check
+
+    // Output the review data (reuse your existing function to fetch reviews)
+    $output = grb_generate_review_html(); // Function to generate review HTML
+    echo $output;
+
+    wp_die(); // Required to properly terminate AJAX requests
+}
+add_action('wp_ajax_grb_get_reviews', 'grb_ajax_get_reviews');
+add_action('wp_ajax_nopriv_grb_get_reviews', 'grb_ajax_get_reviews'); // Allow access for non-logged-in users
+
+/**
 * Enqueue plugin styles 
 */ 
 function grb_enqueue_styles() { 
     wp_enqueue_style('grb-styles', plugin_dir_url(FILE) . 'css/grb-styles.css'); 
 } 
 add_action('wp_enqueue_scripts', 'grb_enqueue_styles'); 
+
+/**
+ * Enqueue plugin scripts
+ */
+function grb_enqueue_ajax_scripts() {
+    wp_enqueue_script(
+        'grb-ajax-script',
+        plugin_dir_url(__FILE__) . 'js/grb-ajax.js',
+        array('jquery'),
+        null,
+        true
+    );
+
+    // Localize the AJAX URL for use in JavaScript
+    wp_localize_script(
+        'grb-ajax-script',
+        'grb_ajax_object',
+        array(
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce'    => wp_create_nonce('grb_ajax_nonce') // Security nonce
+        )
+    );
+}
+add_action('wp_enqueue_scripts', 'grb_enqueue_ajax_scripts');
 
 /**
  * Log errors to the browser console.
