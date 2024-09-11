@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Simple Reviews Badge
- * Plugin URI: https://alphalabs.net/
+ * Plugin URI: https://alphalabs.net/simple-reviews-badge/
  * Description: Displays a simple Simple Reviews Badge with aggregate ratings and stars.
  * Version: 1.0
  * Author: Alpha Labs
