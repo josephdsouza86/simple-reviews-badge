@@ -159,32 +159,53 @@ function grb_generate_review_html( $atts ) {
         }
         </script>';
 	}
-
-	// Filterable rating word and aggregate rating.
-	$rating_word = apply_filters( 'grb_rating_word', grb_get_rating_word( $aggregate_rating ), $aggregate_rating );
-
-	// Visual Output with Star Representation.
-	$response .= '<div class="review-box">
-        <a href="' . esc_url( $review_link ) . '" class="review-link" target="_blank">
-            <div>
-                <strong class="review-word">' . esc_html( $rating_word ) . '</strong>
-                <div class="stars">';
-
-	// Loop to display stars.
+	
+    // Get the rating word based on the aggregate rating.
+    $rating_word = apply_filters( 'grb_rating_word', grb_get_rating_word( $aggregate_rating ), $aggregate_rating );
+    
+    // Loop to display stars.
+    $stars = '';
 	for ( $i = 1; $i <= 5; $i++ ) {
-		$response .= apply_filters( 'grb_star_svg', grb_get_star_svg( $i, $aggregate_rating ), $i, $aggregate_rating );
+		$stars .= apply_filters( 'grb_star_svg', grb_get_star_svg( $i, $aggregate_rating ), $i, $aggregate_rating );
 	}
 
-	$response .= '</div>
-            </div>
-            <div>
-                <div class="review-description">' . __( 'Based on', 'google-reviews-badge' ) . ' <strong>' . esc_html( $review_count ) . ' ' . __( 'reviews', 'google-reviews-badge' ) . '</strong></div>
-                <img src="' . esc_url( $atts['img_src'] ) . '" alt="' . __( 'Google Business Profile', 'google-reviews-badge' ) . '" class="review-logo">
-            </div>
-        </a>
+    // Get the brand image.
+    $brand_img = '<img src="' . esc_url( $atts['img_src'] ) . '" alt="' . __( 'Google Business Profile', 'google-reviews-badge' ) . '" class="review-logo">';
+
+    // Get the review count text.
+    $review_count_text = __( 'Based on', 'google-reviews-badge' ) . ' <strong>' . esc_html( $review_count ) . ' ' . __( 'reviews', 'google-reviews-badge' ) . '</strong>';
+
+    // Allow each component to be filtered
+    $rating_word = apply_filters( 'grb_review_word_component', '<strong class="review-word">' . esc_html( $rating_word ) . '</strong>', $aggregate_rating );
+    $stars = apply_filters( 'grb_review_stars_component', '<div class="stars">' . $stars . '</div>', $aggregate_rating );
+    $brand_img = apply_filters( 'grb_review_image_component', $brand_img, $atts['img_src'] );
+    $review_count_text = apply_filters( 'grb_review_count_component', '<div class="review-description">' . $review_count_text . '</div>', $review_count );
+
+    // Default template structure using named placeholders.
+    $template = '<div class="review-box">
+    <a href="{review_link}" class="review-link" target="_blank">
+        <div>{rating_word}{stars}</div>
+        <div>{review_count}{image}</div>
+    </a>
     </div>';
 
-	return $response;
+    // Allow developers to modify the template structure.
+    $template = apply_filters( 'grb_review_template', $template );
+
+    // Map of placeholders and corresponding component values.
+    $placeholders = array(
+        '{review_link}'  => esc_url( $review_link ),
+        '{rating_word}'  => $rating_word,
+        '{stars}'        => $stars,
+        '{review_count}' => $review_count_text,
+        '{image}'        => $brand_img,
+    );
+
+    // Replace the placeholders with actual values.
+    $response = str_replace( array_keys( $placeholders ), array_values( $placeholders ), $template );
+
+    // Return the final output.
+    return $response;
 }
 
 /**
