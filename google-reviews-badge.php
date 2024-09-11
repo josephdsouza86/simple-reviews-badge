@@ -237,7 +237,7 @@ function grb_ajax_get_reviews() {
 	// Action hook before the review output.
 	do_action( 'grb_before_reviews_output' );
 
-	echo esc_html( $output );
+	echo wp_kses_post( $output );
 
 	// Action hook after the review output.
 	do_action( 'grb_after_reviews_output' );
