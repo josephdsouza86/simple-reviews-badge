@@ -2,9 +2,9 @@
 /**
  * Plugin Name: Google Reviews Badge
  * Plugin URI: https://alphalabs.net/
- * Description: Displays a Google Reviews badge with aggregate ratings and stars.
+ * Description: Displays a simple Google Reviews badge with aggregate ratings and stars.
  * Version: 1.0
- * Author: Joseph D'Souza
+ * Author: Alpha Labs
  * Author URI: https://alphalabs.net/
  * License: GPL2
  * Text Domain: google-reviews-badge

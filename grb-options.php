@@ -17,16 +17,16 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 function grb_get_default_options() {
 	return array(
-		'grb_place_id'           => 'ChIJuQkUQ5YqdEgRipQ_lAyte_Y',
-		'grb_api_key'            => 'your_default_api_key_here',
+		'grb_place_id'           => '',
+		'grb_api_key'            => '',
 		'grb_img_src'            => 'https://cdn.trustindex.io/assets/platform/Google/logo.svg',
 		'grb_cache_duration'     => HOUR_IN_SECONDS,
-		'grb_schema_description' => 'Custom web design services by Alpha Labs.',
-		'grb_schema_name'        => 'Alpha Labs Web Design',
-		'grb_schema_brand'       => 'Alpha Labs',
-		'grb_schema_id'          => 'https://alphalabs.net/web-design-and-development/',
-		'grb_schema_url'         => 'https://alphalabs.net/',
-		'grb_review_link'        => 'https://maps.app.goo.gl/vgyvhyXa98rc7pUv5',
+		'grb_schema_description' => '',
+		'grb_schema_name'        => '',
+		'grb_schema_brand'       => '',
+		'grb_schema_id'          => '',
+		'grb_schema_url'         => '',
+		'grb_review_link'        => '',
 	);
 }
 
