@@ -35,6 +35,7 @@ function grb_register_settings() {
 	register_setting( 'grb_options_group', 'grb_api_key', 'sanitize_text_field' );
 	register_setting( 'grb_options_group', 'grb_img_src', 'esc_url' );
 	register_setting( 'grb_options_group', 'grb_cache_duration', 'intval' );
+	register_setting( 'grb_options_group', 'grb_review_link', 'esc_url' );
 
 	// Register schema settings.
 	register_setting( 'grb_options_group', 'grb_schema_description', 'sanitize_textarea_field' );

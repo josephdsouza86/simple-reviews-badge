@@ -60,7 +60,7 @@ function grb_settings_page() {
 					<tr valign="top">
 						<th scope="row"><?php esc_html_e( 'Google API Key', 'google-reviews-badge' ); ?></th>
 						<td>
-							<input type="text" name="grb_api_key" value="<?php echo esc_attr( grb_get_option( 'grb_api_key' ) ); ?>" placeholder="e.g., AIzaSyDIzMlTNIRSQnqTzUiYF_rgDZlZrPHIkm4" required />
+							<input type="text" name="grb_api_key" value="<?php echo esc_attr( grb_get_option( 'grb_api_key' ) ); ?>" placeholder="e.g., AIzaFyWDzmlFDSRE_gSsFtDsAw3" required />
 							<p class="description"><?php esc_html_e( 'Enter your Google API key. You can create this in your Google Cloud Console.', 'google-reviews-badge' ); ?></p>
 						</td>
 					</tr>
