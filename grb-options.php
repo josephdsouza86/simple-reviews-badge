@@ -33,5 +33,8 @@ function grb_get_default_options() {
  */
 function grb_get_option($option_key) {
     $default_options = grb_get_default_options();
-    return get_option($option_key, isset($default_options[$option_key]) ? $default_options[$option_key] : null);
+    $value = get_option($option_key, isset($default_options[$option_key]) ? $default_options[$option_key] : null);
+
+    // Allow developers to filter the option value
+    return apply_filters('grb_get_option_' . $option_key, $value);
 }

@@ -78,7 +78,7 @@ function grb_generate_review_html() {
     $cached_data = get_transient($transient_key);
 
     if (false === $cached_data) {
-        $api_url = 'https://maps.googleapis.com/maps/api/place/details/json?place_id=' . urlencode($place_id) . '&fields=rating,user_ratings_total&key=' . urlencode($api_key);
+        $api_url = apply_filters('grb_before_api_request', 'https://maps.googleapis.com/maps/api/place/details/json?place_id=' . urlencode($place_id) . '&fields=rating,user_ratings_total&key=' . urlencode($api_key));
         $response = wp_remote_get($api_url);
 
         if (is_wp_error($response)) {
@@ -218,9 +218,16 @@ function grb_get_star_svg( $i, $aggregateRating ) {
 function grb_ajax_get_reviews() {
     check_ajax_referer('grb_ajax_nonce', 'nonce'); // Security check
 
-    // Output the review data (reuse your existing function to fetch reviews)
-    $output = grb_generate_review_html(); // Function to generate review HTML
+    // Output the review data
+    $output = grb_generate_review_html(); 
+
+    // Action hook before the review output
+    do_action('grb_before_reviews_output');
+
     echo $output;
+
+    // Action hook after the review output
+    do_action('grb_after_reviews_output');
 
     wp_die(); // Required to properly terminate AJAX requests
 }
