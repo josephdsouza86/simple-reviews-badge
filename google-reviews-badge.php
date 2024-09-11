@@ -67,28 +67,35 @@ function grb_fetch_and_display_reviews( $atts ) {
     // Check if transient exists
     $cached_data = get_transient( 'google_reviews_data' );
 
-    if ( false === $cached_data ) {
+    if (false === $cached_data) {
         // Fetch reviews from Google Places API
-        $api_url = 'https://maps.googleapis.com/maps/api/place/details/json?place_id=' . urlencode( $place_id ) . '&fields=rating,user_ratings_total&key=' . urlencode( $api_key );
-        $response = wp_remote_get( $api_url );
+        $api_url = 'https://maps.googleapis.com/maps/api/place/details/json?place_id=' . urlencode($place_id) . '&fields=rating,user_ratings_total&key=' . urlencode($api_key);
+        $response = wp_remote_get($api_url);
 
-        if ( is_wp_error( $response ) ) {
-            return '<p>' . __( 'Error fetching reviews.', 'google-reviews-badge' ) . '</p>';
+        if (is_wp_error($response)) {
+            $error_message = 'Google Reviews API request failed: ' . $response->get_error_message();
+            grb_log_to_console($error_message);
+            grb_notify_admin('Google Reviews API Error', $error_message);
+            return ''; // Return nothing to prevent display on the page
         }
 
-        $data = wp_remote_retrieve_body( $response );
-        $data = json_decode( $data, true );
+        $data = wp_remote_retrieve_body($response);
+        $data = json_decode($data, true);
 
-        if ( !isset( $data['result'] ) ) {
-            return '<p>' . __( 'Invalid response from Google API.', 'google-reviews-badge' ) . '</p>';
+        // Check for a valid response from Google API
+        if (!isset($data['result'])) {
+            $error_message = 'Invalid response from Google Reviews API: ' . json_encode($data);
+            grb_log_to_console($error_message);
+            grb_notify_admin('Google Reviews API Invalid Response', $error_message);
+            return ''; // Return nothing to prevent display on the page
         }
 
-        // Calculate aggregate rating
-        $aggregateRating = isset( $data['result']['rating'] ) ? floatval( $data['result']['rating'] ) : 0;
-        $reviewCount = isset( $data['result']['user_ratings_total'] ) ? intval( $data['result']['user_ratings_total'] ) : 0;
+        // Cache the data on successful API response
+        $aggregateRating = isset($data['result']['rating']) ? floatval($data['result']['rating']) : 0;
+        $reviewCount = isset($data['result']['user_ratings_total']) ? intval($data['result']['user_ratings_total']) : 0;
 
-        // Store data in transient
-        set_transient( 'google_reviews_data', ['rating' => $aggregateRating, 'count' => $reviewCount], $cache_duration );
+        // Store data in transient, increase the expiry if successful
+        set_transient($transient_key, ['rating' => $aggregateRating, 'count' => $reviewCount], $cache_duration);
     } else {
         $aggregateRating = $cached_data['rating'];
         $reviewCount = $cached_data['count'];
@@ -205,5 +212,29 @@ function grb_enqueue_styles() {
     wp_enqueue_style('grb-styles', plugin_dir_url(FILE) . 'css/grb-styles.css'); 
 } 
 add_action('wp_enqueue_scripts', 'grb_enqueue_styles'); 
+
+/**
+ * Log errors to the browser console.
+ *
+ * @param string $message
+ */
+function grb_log_to_console($message) {
+    echo '<script>console.error("' . esc_js($message) . '");</script>';
+}
+
+/**
+ * Notify the admin via email about an error.
+ *
+ * @param string $subject
+ * @param string $message
+ */
+function grb_notify_admin($subject, $message) {
+    $admin_email = get_option('admin_email');
+    $email_subject = '[' . get_bloginfo('name') . '] ' . $subject;
+    $email_message = 'An issue has occurred with the Google Reviews Badge plugin: ' . "\r\n\r\n" . $message;
+    
+    // Send the email
+    wp_mail($admin_email, $email_subject, $email_message);
+}
 
 ?>
