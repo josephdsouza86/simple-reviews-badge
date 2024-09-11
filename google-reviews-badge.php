@@ -62,6 +62,12 @@ function grb_fetch_and_display_reviews( $atts ) {
 		$atts
 	);
 
+    // Localize the shortcode attributes to use in the AJAX request.
+    wp_localize_script( 'grb-ajax-script', 'grb_shortcode_atts', array(
+        'img_src'        => esc_url( $atts['img_src'] ),
+        'include_schema' => $atts['include_schema'],
+    ));
+
 	// Return a placeholder that will be replaced by AJAX.
 	return '<div class="review-box-ajax">' . __( 'Loading reviews...', 'google-reviews-badge' ) . '</div>';
 }
@@ -69,9 +75,10 @@ function grb_fetch_and_display_reviews( $atts ) {
 /**
  * Generate HTML for the Google Reviews.
  *
+ * @param array $atts Shortcode attributes.
  * @return string HTML output for the reviews
  */
-function grb_generate_review_html() {
+function grb_generate_review_html( $atts ) {
 	// Fetch review data.
 	$place_id       = grb_get_option( 'grb_place_id' );
 	$api_key        = grb_get_option( 'grb_api_key' );
@@ -231,13 +238,48 @@ function grb_get_star_svg( $i, $aggregate_rating ) {
 function grb_ajax_get_reviews() {
 	check_ajax_referer( 'grb_ajax_nonce', 'nonce' );
 
+    // Get the shortcode attributes from the AJAX request.
+    $img_src = isset( $_POST['img_src'] ) ? sanitize_url( $_POST['img_src'] ) : '';
+    $include_schema = isset( $_POST['include_schema'] ) ? filter_var( $_POST['include_schema'], FILTER_VALIDATE_BOOLEAN ) : false;
+
 	// Output the review data.
-	$output = grb_generate_review_html();
+    $output = grb_generate_review_html( array( 'img_src' => $img_src, 'include_schema' => $include_schema ) );
 
 	// Action hook before the review output.
 	do_action( 'grb_before_reviews_output' );
 
-	echo wp_kses_post( $output );
+    $allowed_tags = array(
+        'div'    => array(
+            'class' => array(),
+        ),
+        'a'      => array(
+            'href'  => array(),
+            'class' => array(),
+            'target' => array(),
+        ),
+        'strong'       => array(
+            'class' => array(),
+        ),
+        'img'    => array(
+            'src'   => array(),
+            'alt'   => array(),
+            'class' => array(),
+        ),
+        'svg'    => array(
+            'version' => array(),
+            'xmlns'   => array(),
+            'width'   => array(),
+            'height'  => array(),
+            'viewBox' => array(),
+            'viewbox' => array(),
+        ),
+        'path'   => array(
+            'fill'   => array(),
+            'd'      => array(),
+        ),
+    );
+    
+    echo wp_kses( $output, $allowed_tags );
 
 	// Action hook after the review output.
 	do_action( 'grb_after_reviews_output' );

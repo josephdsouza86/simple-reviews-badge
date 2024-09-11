@@ -16,7 +16,9 @@ jQuery( document ).ready(
 				type: 'POST',
 				data: {
 					action: 'grb_get_reviews',
-					nonce: grb_ajax_object.nonce
+					nonce: grb_ajax_object.nonce,
+					img_src: grb_shortcode_atts.img_src,
+					include_schema: grb_shortcode_atts.include_schema
 				},
 				success: function (response) {
 					// Replace the placeholder with the fetched reviews.
