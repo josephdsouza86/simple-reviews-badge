@@ -1,15 +1,15 @@
 <?php
 /**
- * Plugin Name: Google Reviews Badge
+ * Plugin Name: Simple Reviews Badge
  * Plugin URI: https://alphalabs.net/
- * Description: Displays a simple Google Reviews badge with aggregate ratings and stars.
+ * Description: Displays a simple Simple Reviews Badge with aggregate ratings and stars.
  * Version: 1.0
  * Author: Alpha Labs
  * Author URI: https://alphalabs.net/
  * License: GPL2
- * Text Domain: google-reviews-badge
+ * Text Domain: simple-reviews-badge
  *
- * @package Google_Reviews_Badge
+ * @package Simple_Reviews_Badge
  */
 
 // Prevent direct access.
@@ -73,7 +73,7 @@ function grb_fetch_and_display_reviews( $atts ) {
 	);
 
 	// Return a placeholder that will be replaced by AJAX.
-	return '<div class="review-box-ajax">' . __( 'Loading reviews...', 'google-reviews-badge' ) . '</div>';
+	return '<div class="review-box-ajax">' . __( 'Loading reviews...', 'simple-reviews-badge' ) . '</div>';
 }
 
 /**
@@ -174,10 +174,10 @@ function grb_generate_review_html( $atts ) {
 	}
 
 	// Get the brand image.
-	$brand_img = '<img src="' . esc_url( $atts['img_src'] ) . '" alt="' . __( 'Google Business Profile', 'google-reviews-badge' ) . '" class="review-logo">';
+	$brand_img = '<img src="' . esc_url( $atts['img_src'] ) . '" alt="' . __( 'Google Business Profile', 'simple-reviews-badge' ) . '" class="review-logo">';
 
 	// Get the review count text.
-	$review_count_text = __( 'Based on', 'google-reviews-badge' ) . ' <strong>' . esc_html( $review_count ) . ' ' . __( 'reviews', 'google-reviews-badge' ) . '</strong>';
+	$review_count_text = __( 'Based on', 'simple-reviews-badge' ) . ' <strong>' . esc_html( $review_count ) . ' ' . __( 'reviews', 'simple-reviews-badge' ) . '</strong>';
 
 	// Allow each component to be filtered.
 	$rating_word       = apply_filters( 'grb_review_word_component', '<strong class="review-word">' . esc_html( $rating_word ) . '</strong>', $aggregate_rating );
@@ -220,17 +220,17 @@ function grb_generate_review_html( $atts ) {
  */
 function grb_get_rating_word( $aggregate_rating ) {
 	if ( 5 === $aggregate_rating ) {
-		return __( 'Excellent', 'google-reviews-badge' );
+		return __( 'Excellent', 'simple-reviews-badge' );
 	} elseif ( 4.5 <= $aggregate_rating ) {
-		return __( 'Great', 'google-reviews-badge' );
+		return __( 'Great', 'simple-reviews-badge' );
 	} elseif ( 4 <= $aggregate_rating ) {
-		return __( 'Good', 'google-reviews-badge' );
+		return __( 'Good', 'simple-reviews-badge' );
 	} elseif ( 3.5 <= $aggregate_rating ) {
-		return __( 'Average', 'google-reviews-badge' );
+		return __( 'Average', 'simple-reviews-badge' );
 	} elseif ( 3 <= $aggregate_rating ) {
-		return __( 'Fair', 'google-reviews-badge' );
+		return __( 'Fair', 'simple-reviews-badge' );
 	} else {
-		return __( 'Poor', 'google-reviews-badge' );
+		return __( 'Poor', 'simple-reviews-badge' );
 	}
 }
 
@@ -369,7 +369,7 @@ function grb_log_to_console( $message ) {
 function grb_notify_admin( $subject, $message ) {
 	$admin_email   = get_option( 'admin_email' );
 	$email_subject = '[' . get_bloginfo( 'name' ) . '] ' . $subject;
-	$email_message = 'An issue has occurred with the Google Reviews Badge plugin: ' . "\r\n\r\n" . $message;
+	$email_message = 'An issue has occurred with the Simple Reviews Badge plugin: ' . "\r\n\r\n" . $message;
 
 	// Send the email.
 	wp_mail( $admin_email, $email_subject, $email_message );

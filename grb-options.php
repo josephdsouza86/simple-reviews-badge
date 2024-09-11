@@ -1,8 +1,8 @@
 <?php
 /**
- * Google Reviews Badge Options
+ * Simple Reviews Badge Options
  *
- * @package Google_Reviews_Badge
+ * @package Simple_Reviews_Badge
  */
 
 // Prevent direct access.
@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Get all default options for the Google Reviews Badge plugin.
+ * Get all default options for the Simple Reviews Badge plugin.
  *
  * @return array
  */

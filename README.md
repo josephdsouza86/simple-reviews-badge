@@ -1,6 +1,6 @@
-# Google Reviews Badge
+# Simple Reviews Badge
 
-**Google Reviews Badge** is a WordPress plugin that displays a simple Google Reviews badge with aggregate ratings, stars, and a customisable layout. The badge can be used as a shortcode and supports schema markup for SEO.
+**Simple Reviews Badge** is a WordPress plugin that displays a simple Simple Reviews Badge with aggregate ratings, stars, and a customisable layout. The badge can be used as a shortcode and supports schema markup for SEO.
 
 ## Features
 
@@ -12,21 +12,21 @@
   
 ## Installation
 
-1. Upload the plugin files to the `/wp-content/plugins/google-reviews-badge` directory or install the plugin through the WordPress plugins screen directly.
+1. Upload the plugin files to the `/wp-content/plugins/simple-reviews-badge` directory or install the plugin through the WordPress plugins screen directly.
 2. Activate the plugin through the 'Plugins' screen in WordPress.
-3. Configure the plugin in **Settings > Google Reviews Badge**.
+3. Configure the plugin in **Settings > Simple Reviews Badge**.
 
 ## Usage
 
-You can display the Google Reviews badge on any page or post by using the following shortcode:
+You can display the Simple Reviews Badge on any page or post by using the following shortcode:
 
 `[display_reviews]`
 
-The shortcode will render a Google Reviews badge with stars, aggregate ratings, and a review count.
+The shortcode will render a Simple Reviews Badge with stars, aggregate ratings, and a review count.
 
 ## Settings
 
-To configure the plugin, go to Settings > Google Reviews Badge in the WordPress admin panel. Here are the available settings:
+To configure the plugin, go to Settings > Simple Reviews Badge in the WordPress admin panel. Here are the available settings:
 
 ### Basic Settings
 
@@ -124,13 +124,13 @@ Refer to the [Google Places API documentation](https://developers.google.com/pla
 
 ## Plugin Information
 
-- **Plugin Name**: Google Reviews Badge
+- **Plugin Name**: Simple Reviews Badge
 - **Version**: 1.0
 - **Author**: [Alpha Labs](https://alphalabs.net)
 - **License**: GPL2
-- **Text Domain**: google-reviews-badge
+- **Text Domain**: simple-reviews-badge
 
 ## Changelog
 1.0
-Initial release of the Google Reviews Badge plugin.
+Initial release of the Simple Reviews Badge plugin.
 For support and further customisation, visit Alpha Labs.
