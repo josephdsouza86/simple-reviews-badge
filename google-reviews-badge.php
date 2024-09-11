@@ -62,11 +62,15 @@ function grb_fetch_and_display_reviews( $atts ) {
 		$atts
 	);
 
-    // Localize the shortcode attributes to use in the AJAX request.
-    wp_localize_script( 'grb-ajax-script', 'grb_shortcode_atts', array(
-        'img_src'        => esc_url( $atts['img_src'] ),
-        'include_schema' => $atts['include_schema'],
-    ));
+	// Localize the shortcode attributes to use in the AJAX request.
+	wp_localize_script(
+		'grb-ajax-script',
+		'grb_shortcode_atts',
+		array(
+			'img_src'        => esc_url( $atts['img_src'] ),
+			'include_schema' => $atts['include_schema'],
+		)
+	);
 
 	// Return a placeholder that will be replaced by AJAX.
 	return '<div class="review-box-ajax">' . __( 'Loading reviews...', 'google-reviews-badge' ) . '</div>';
@@ -159,53 +163,53 @@ function grb_generate_review_html( $atts ) {
         }
         </script>';
 	}
-	
-    // Get the rating word based on the aggregate rating.
-    $rating_word = apply_filters( 'grb_rating_word', grb_get_rating_word( $aggregate_rating ), $aggregate_rating );
-    
-    // Loop to display stars.
-    $stars = '';
+
+	// Get the rating word based on the aggregate rating.
+	$rating_word = apply_filters( 'grb_rating_word', grb_get_rating_word( $aggregate_rating ), $aggregate_rating );
+
+	// Loop to display stars.
+	$stars = '';
 	for ( $i = 1; $i <= 5; $i++ ) {
 		$stars .= apply_filters( 'grb_star_svg', grb_get_star_svg( $i, $aggregate_rating ), $i, $aggregate_rating );
 	}
 
-    // Get the brand image.
-    $brand_img = '<img src="' . esc_url( $atts['img_src'] ) . '" alt="' . __( 'Google Business Profile', 'google-reviews-badge' ) . '" class="review-logo">';
+	// Get the brand image.
+	$brand_img = '<img src="' . esc_url( $atts['img_src'] ) . '" alt="' . __( 'Google Business Profile', 'google-reviews-badge' ) . '" class="review-logo">';
 
-    // Get the review count text.
-    $review_count_text = __( 'Based on', 'google-reviews-badge' ) . ' <strong>' . esc_html( $review_count ) . ' ' . __( 'reviews', 'google-reviews-badge' ) . '</strong>';
+	// Get the review count text.
+	$review_count_text = __( 'Based on', 'google-reviews-badge' ) . ' <strong>' . esc_html( $review_count ) . ' ' . __( 'reviews', 'google-reviews-badge' ) . '</strong>';
 
-    // Allow each component to be filtered
-    $rating_word = apply_filters( 'grb_review_word_component', '<strong class="review-word">' . esc_html( $rating_word ) . '</strong>', $aggregate_rating );
-    $stars = apply_filters( 'grb_review_stars_component', '<div class="stars">' . $stars . '</div>', $aggregate_rating );
-    $brand_img = apply_filters( 'grb_review_image_component', $brand_img, $atts['img_src'] );
-    $review_count_text = apply_filters( 'grb_review_count_component', '<div class="review-description">' . $review_count_text . '</div>', $review_count );
+	// Allow each component to be filtered.
+	$rating_word       = apply_filters( 'grb_review_word_component', '<strong class="review-word">' . esc_html( $rating_word ) . '</strong>', $aggregate_rating );
+	$stars             = apply_filters( 'grb_review_stars_component', '<div class="stars">' . $stars . '</div>', $aggregate_rating );
+	$brand_img         = apply_filters( 'grb_review_image_component', $brand_img, $atts['img_src'] );
+	$review_count_text = apply_filters( 'grb_review_count_component', '<div class="review-description">' . $review_count_text . '</div>', $review_count );
 
-    // Default template structure using named placeholders.
-    $template = '<div class="review-box">
+	// Default template structure using named placeholders.
+	$template = '<div class="review-box">
     <a href="{review_link}" class="review-link" target="_blank">
         <div>{rating_word}{stars}</div>
         <div>{review_count}{image}</div>
     </a>
     </div>';
 
-    // Allow developers to modify the template structure.
-    $template = apply_filters( 'grb_review_template', $template );
+	// Allow developers to modify the template structure.
+	$template = apply_filters( 'grb_review_template', $template );
 
-    // Map of placeholders and corresponding component values.
-    $placeholders = array(
-        '{review_link}'  => esc_url( $review_link ),
-        '{rating_word}'  => $rating_word,
-        '{stars}'        => $stars,
-        '{review_count}' => $review_count_text,
-        '{image}'        => $brand_img,
-    );
+	// Map of placeholders and corresponding component values.
+	$placeholders = array(
+		'{review_link}'  => esc_url( $review_link ),
+		'{rating_word}'  => $rating_word,
+		'{stars}'        => $stars,
+		'{review_count}' => $review_count_text,
+		'{image}'        => $brand_img,
+	);
 
-    // Replace the placeholders with actual values.
-    $response = str_replace( array_keys( $placeholders ), array_values( $placeholders ), $template );
+	// Replace the placeholders with actual values.
+	$response = str_replace( array_keys( $placeholders ), array_values( $placeholders ), $template );
 
-    // Return the final output.
-    return $response;
+	// Return the final output.
+	return $response;
 }
 
 /**
@@ -259,48 +263,53 @@ function grb_get_star_svg( $i, $aggregate_rating ) {
 function grb_ajax_get_reviews() {
 	check_ajax_referer( 'grb_ajax_nonce', 'nonce' );
 
-    // Get the shortcode attributes from the AJAX request.
-    $img_src = isset( $_POST['img_src'] ) ? sanitize_url( $_POST['img_src'] ) : '';
-    $include_schema = isset( $_POST['include_schema'] ) ? filter_var( $_POST['include_schema'], FILTER_VALIDATE_BOOLEAN ) : false;
+	// Get the shortcode attributes from the AJAX request.
+	$img_src        = isset( $_POST['img_src'] ) ? sanitize_url( wp_unslash( $_POST['img_src'] ) ) : '';
+	$include_schema = isset( $_POST['include_schema'] ) ? filter_var( wp_unslash( $_POST['include_schema'] ), FILTER_VALIDATE_BOOLEAN ) : false;
 
 	// Output the review data.
-    $output = grb_generate_review_html( array( 'img_src' => $img_src, 'include_schema' => $include_schema ) );
+	$output = grb_generate_review_html(
+		array(
+			'img_src'        => $img_src,
+			'include_schema' => $include_schema,
+		)
+	);
 
 	// Action hook before the review output.
 	do_action( 'grb_before_reviews_output' );
 
-    $allowed_tags = array(
-        'div'    => array(
-            'class' => array(),
-        ),
-        'a'      => array(
-            'href'  => array(),
-            'class' => array(),
-            'target' => array(),
-        ),
-        'strong'       => array(
-            'class' => array(),
-        ),
-        'img'    => array(
-            'src'   => array(),
-            'alt'   => array(),
-            'class' => array(),
-        ),
-        'svg'    => array(
-            'version' => array(),
-            'xmlns'   => array(),
-            'width'   => array(),
-            'height'  => array(),
-            'viewBox' => array(),
-            'viewbox' => array(),
-        ),
-        'path'   => array(
-            'fill'   => array(),
-            'd'      => array(),
-        ),
-    );
-    
-    echo wp_kses( $output, $allowed_tags );
+	$allowed_tags = array(
+		'div'    => array(
+			'class' => array(),
+		),
+		'a'      => array(
+			'href'   => array(),
+			'class'  => array(),
+			'target' => array(),
+		),
+		'strong' => array(
+			'class' => array(),
+		),
+		'img'    => array(
+			'src'   => array(),
+			'alt'   => array(),
+			'class' => array(),
+		),
+		'svg'    => array(
+			'version' => array(),
+			'xmlns'   => array(),
+			'width'   => array(),
+			'height'  => array(),
+			'viewBox' => array(),
+			'viewbox' => array(),
+		),
+		'path'   => array(
+			'fill' => array(),
+			'd'    => array(),
+		),
+	);
+
+	echo wp_kses( $output, $allowed_tags );
 
 	// Action hook after the review output.
 	do_action( 'grb_after_reviews_output' );
