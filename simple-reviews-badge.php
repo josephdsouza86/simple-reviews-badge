@@ -53,7 +53,7 @@ add_action( 'admin_init', 'grb_register_settings' );
  * @return string HTML output
  */
 function grb_fetch_and_display_reviews( $atts ) {
-	// Extract shortcode attributes.
+	// Parse the shortcode attributes.
 	$atts = shortcode_atts(
 		array(
 			'img_src'        => grb_get_option( 'grb_img_src' ),
@@ -62,18 +62,34 @@ function grb_fetch_and_display_reviews( $atts ) {
 		$atts
 	);
 
-	// Localize the shortcode attributes to use in the AJAX request.
-	wp_localize_script(
-		'grb-ajax-script',
-		'grb_shortcode_atts',
-		array(
-			'img_src'        => esc_url( $atts['img_src'] ),
-			'include_schema' => $atts['include_schema'],
-		)
-	);
+	// See if we already have the data cached.
+	$place_id       = grb_get_option( 'grb_place_id' );
 
-	// Return a placeholder that will be replaced by AJAX.
-	return '<div class="review-box-ajax">' . __( 'Loading reviews...', 'simple-reviews-badge' ) . '</div>';
+	$transient_key = 'google_reviews_data_' . md5( $place_id );
+	$cached_data   = get_transient( $transient_key );
+
+	if ( false === $cached_data ) {
+		// Let's defer the loading of reviews to AJAX, so as not to hold up the page load.
+
+		// Localize the shortcode attributes to use in the AJAX request.
+		wp_localize_script(
+			'grb-ajax-script',
+			'grb_shortcode_atts',
+			array(
+				'img_src'        => esc_url( $atts['img_src'] ),
+				'include_schema' => $atts['include_schema'],
+			)
+		);
+
+		// Return a placeholder that will be replaced by AJAX.
+		return '<div class="review-box-ajax">' . __( 'Loading reviews...', 'simple-reviews-badge' ) . '</div>';
+	} else {
+		// Generate the review HTML.
+		$output = grb_generate_review_html( $atts );
+
+		// Render the review HTML.
+		return render_review_html( $output );
+	}
 }
 
 /**
@@ -188,8 +204,8 @@ function grb_generate_review_html( $atts ) {
 	// Default template structure using named placeholders.
 	$template = '<div class="review-box">
     <a href="{review_link}" class="review-link" target="_blank">
-        <div>{rating_word}{stars}</div>
-        <div>{review_count}{image}</div>
+        {rating_word}{stars}
+        {review_count}{image}
     </a>
     </div>';
 
@@ -275,6 +291,24 @@ function grb_ajax_get_reviews() {
 		)
 	);
 
+	echo render_review_html( $output );
+
+	wp_die(); // Required to properly terminate AJAX requests.
+}
+add_action( 'wp_ajax_grb_get_reviews', 'grb_ajax_get_reviews' );
+add_action( 'wp_ajax_nopriv_grb_get_reviews', 'grb_ajax_get_reviews' );
+
+/**
+ * Render the review HTML output. Includes hooks for customisation and tag escaping.
+ * 
+ * @param string $output Review HTML output.
+ * @return void
+ */
+function render_review_html( $output ) {
+	$final_html = '';
+
+	ob_start();
+
 	// Action hook before the review output.
 	do_action( 'grb_before_reviews_output' );
 
@@ -314,10 +348,12 @@ function grb_ajax_get_reviews() {
 	// Action hook after the review output.
 	do_action( 'grb_after_reviews_output' );
 
-	wp_die(); // Required to properly terminate AJAX requests.
+    // Get the output buffer contents and clean the buffer
+    $final_html = ob_get_clean();
+
+    // Return the captured HTML
+    return $final_html;
 }
-add_action( 'wp_ajax_grb_get_reviews', 'grb_ajax_get_reviews' );
-add_action( 'wp_ajax_nopriv_grb_get_reviews', 'grb_ajax_get_reviews' );
 
 /**
  * Enqueue plugin styles
