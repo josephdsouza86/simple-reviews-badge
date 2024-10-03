@@ -305,6 +305,7 @@ function simple_reviews_badge_ajax_get_reviews() {
 		)
 	);
 
+	// Escaping is handled in the render_review_html function.
 	echo render_review_html( $output );
 
 	wp_die(); // Required to properly terminate AJAX requests.
@@ -391,7 +392,7 @@ function simple_reviews_badge_enqueue_ajax_scripts() {
 		'simple-review-badge-ajax-script',
 		plugin_dir_url( __FILE__ ) . 'js/srb-ajax.js',
 		array( 'jquery' ),
-		null,
+		SIMPLE_REVIEWS_BADGE_VERSION,
 		true
 	);
 
@@ -415,7 +416,7 @@ add_action( 'wp_enqueue_scripts', 'simple_reviews_badge_enqueue_ajax_scripts' );
 function simple_reviews_badge_log_to_console( $message ) {
     // Register an empty script if it hasn't been registered already
     if ( ! wp_script_is( 'grb-inline-script', 'registered' ) ) {
-        wp_register_script( 'grb-inline-script', '' );
+        wp_register_script( 'grb-inline-script', '', array(), SIMPLE_REVIEWS_BADGE_VERSION, true );
         wp_enqueue_script( 'grb-inline-script' );
     }
 
