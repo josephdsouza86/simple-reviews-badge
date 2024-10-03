@@ -1,6 +1,5 @@
 === Simple Reviews Badge ===
-Contributors: yourusername
-Donate link: https://example.com
+Contributors: dsouzaj86
 Tags: google, reviews, badge, ratings
 Requires at least: 6.0
 Tested up to: 6.6
