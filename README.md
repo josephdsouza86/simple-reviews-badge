@@ -44,6 +44,20 @@ To configure the plugin, go to Settings > Simple Reviews Badge in the WordPress 
 1. Schema ID: The schema ID (URL).
 1. Schema URL: The URL of the product or business being rated.
 
+## Third-Party Services
+
+### Google Places API
+
+This plugin relies on the Google Places API to fetch review data from your Google Business profile. To use this plugin, you will need to provide a Google Places API key and your business’s Place ID.
+
+- **Data Usage**: Your Google API Key and Place ID are used to make API calls to Google’s servers to retrieve review data such as ratings, review counts, and related business information.
+- **Service URL**: [Google Places API](https://developers.google.com/places/web-service/overview)
+- **Usage Terms**: [Google API Terms of Use](https://cloud.google.com/terms/)
+
+### Note:
+
+Your Google API key and Place ID will be stored locally within your WordPress database, but API calls are made to Google’s external services to retrieve the necessary data.
+
 ## Customisation
 
 You can modify the plugin’s behaviour by using WordPress filters and actions.
