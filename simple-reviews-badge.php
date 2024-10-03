@@ -17,6 +17,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// Define plugin constants.
+if ( ! defined( 'SIMPLE_REVIEWS_BADGE_VERSION' ) ) {
+    define( 'SIMPLE_REVIEWS_BADGE_VERSION', '1.0' );
+}
+
 // Include the admin settings page.
 require_once plugin_dir_path( __FILE__ ) . 'srb-options.php';
 
@@ -70,7 +75,7 @@ function simple_reviews_badge_fetch_and_display_reviews( $atts ) {
 
 		// Localize the shortcode attributes to use in the AJAX request.
 		wp_localize_script(
-			'srb-ajax-script',
+			'simple-review-badge-ajax-script',
 			'simple_reviews_badge_shortcode_atts',
 			array(
 				'img_src'        => esc_url( $atts['img_src'] ),
@@ -368,7 +373,7 @@ function render_review_html( $output ) {
  * Enqueue plugin styles
  */
 function simple_reviews_badge_enqueue_styles() {
-	wp_enqueue_style( 'srb-styles', plugin_dir_url( __FILE__ ) . 'css/srb-styles.min.css' );
+	wp_enqueue_style( 'simple-review-badge-styles', plugins_url( 'css/srb-styles.min.css', __FILE__ ), array(), SIMPLE_REVIEWS_BADGE_VERSION );
 }
 add_action( 'wp_enqueue_scripts', 'simple_reviews_badge_enqueue_styles' );
 
@@ -383,7 +388,7 @@ function simple_reviews_badge_enqueue_ajax_scripts() {
 	}
 
 	wp_enqueue_script(
-		'srb-ajax-script',
+		'simple-review-badge-ajax-script',
 		plugin_dir_url( __FILE__ ) . 'js/srb-ajax.js',
 		array( 'jquery' ),
 		null,
@@ -392,7 +397,7 @@ function simple_reviews_badge_enqueue_ajax_scripts() {
 
 	// Localize the AJAX URL for use in JavaScript.
 	wp_localize_script(
-		'srb-ajax-script',
+		'simple-review-badge-ajax-script',
 		'simple_reviews_badge_ajax_object',
 		array(
 			'ajax_url' => admin_url( 'admin-ajax.php' ),

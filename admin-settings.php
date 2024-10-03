@@ -22,7 +22,7 @@ function simple_reviews_badge_add_admin_menu() {
 		'simple_reviews_badge_settings_page'
 	);
 }
-add_action( 'admin_menu', 'simple_reviews_badge_add_admin_menu' )
+add_action( 'admin_menu', 'simple_reviews_badge_add_admin_menu' );
 
 /**
  * Settings page content
