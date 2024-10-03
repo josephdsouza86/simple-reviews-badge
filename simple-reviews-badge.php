@@ -408,7 +408,15 @@ add_action( 'wp_enqueue_scripts', 'simple_reviews_badge_enqueue_ajax_scripts' );
  * @param string $message Error message.
  */
 function simple_reviews_badge_log_to_console( $message ) {
-	echo '<script>console.error("' . esc_js( $message ) . '");</script>';
+    // Register an empty script if it hasn't been registered already
+    if ( ! wp_script_is( 'grb-inline-script', 'registered' ) ) {
+        wp_register_script( 'grb-inline-script', '' );
+        wp_enqueue_script( 'grb-inline-script' );
+    }
+
+    // Add the console log message as an inline script
+    $inline_script = 'console.error("' . esc_js( $message ) . '");';
+    wp_add_inline_script( 'grb-inline-script', $inline_script );
 }
 
 /**
