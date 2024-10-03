@@ -12,13 +12,13 @@ jQuery( document ).ready(
 		// Make the AJAX request.
 		$.ajax(
 			{
-				url: srb_ajax_object.ajax_url,
+				url: simple_reviews_badge_ajax_object.ajax_url,
 				type: 'POST',
 				data: {
-					action: 'srb_get_reviews',
-					nonce: srb_ajax_object.nonce,
-					img_src: srb_shortcode_atts.img_src,
-					include_schema: srb_shortcode_atts.include_schema
+					action: 'simple_reviews_badge_get_reviews',
+					nonce: simple_reviews_badge_ajax_object.nonce,
+					img_src: simple_reviews_badge_shortcode_atts.img_src,
+					include_schema: simple_reviews_badge_shortcode_atts.include_schema
 				},
 				success: function (response) {
 					// Replace the placeholder with the fetched reviews.

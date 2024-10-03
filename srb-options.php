@@ -15,18 +15,18 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @return array
  */
-function srb_get_default_options() {
+function simple_reviews_badge_get_default_options() {
 	return array(
-		'srb_place_id'           => '',
-		'srb_api_key'            => '',
-		'srb_img_src'            => esc_url( plugin_dir_url( __FILE__ ) . 'img/logo.svg' ),
-		'srb_cache_duration'     => HOUR_IN_SECONDS,
-		'srb_schema_description' => '',
-		'srb_schema_name'        => '',
-		'srb_schema_brand'       => '',
-		'srb_schema_id'          => '',
-		'srb_schema_url'         => '',
-		'srb_review_link'        => '',
+		'simple_reviews_badge_place_id'           => '',
+		'simple_reviews_badge_api_key'            => '',
+		'simple_reviews_badge_img_src'            => esc_url( plugin_dir_url( __FILE__ ) . 'img/logo.svg' ),
+		'simple_reviews_badge_cache_duration'     => HOUR_IN_SECONDS,
+		'simple_reviews_badge_schema_description' => '',
+		'simple_reviews_badge_schema_name'        => '',
+		'simple_reviews_badge_schema_brand'       => '',
+		'simple_reviews_badge_schema_id'          => '',
+		'simple_reviews_badge_schema_url'         => '',
+		'simple_reviews_badge_review_link'        => '',
 	);
 }
 
@@ -36,10 +36,10 @@ function srb_get_default_options() {
  * @param string $option_key The option key to retrieve.
  * @return mixed
  */
-function srb_get_option( $option_key ) {
-	$default_options = srb_get_default_options();
+function simple_reviews_badge_get_option( $option_key ) {
+	$default_options = simple_reviews_badge_get_default_options();
 	$value           = get_option( $option_key, isset( $default_options[ $option_key ] ) ? $default_options[ $option_key ] : null );
 
 	// Allow developers to filter the option value.
-	return apply_filters( 'srb_get_option_' . $option_key, $value );
+	return apply_filters( 'simple_reviews_badge_get_option_' . $option_key, $value );
 }

@@ -24,27 +24,27 @@ require_once plugin_dir_path( __FILE__ ) . 'srb-options.php';
 require_once plugin_dir_path( __FILE__ ) . 'admin-settings.php';
 
 // Register shortcode to display the reviews.
-add_shortcode( 'display_reviews', 'srb_fetch_and_display_reviews' );
+add_shortcode( 'display_reviews', 'simple_reviews_badge_fetch_and_display_reviews' );
 
 /**
  * Register plugin settings
  */
-function srb_register_settings() {
+function simple_reviews_badge_register_settings() {
 	// Register basic settings.
-	register_setting( 'srb_options_group', 'srb_place_id', 'sanitize_text_field' );
-	register_setting( 'srb_options_group', 'srb_api_key', 'sanitize_text_field' );
-	register_setting( 'srb_options_group', 'srb_img_src', 'esc_url' );
-	register_setting( 'srb_options_group', 'srb_cache_duration', 'intval' );
-	register_setting( 'srb_options_group', 'srb_review_link', 'esc_url' );
+	register_setting( 'simple_reviews_badge_options_group', 'simple_reviews_badge_place_id', 'sanitize_text_field' );
+	register_setting( 'simple_reviews_badge_options_group', 'simple_reviews_badge_api_key', 'sanitize_text_field' );
+	register_setting( 'simple_reviews_badge_options_group', 'simple_reviews_badge_img_src', 'esc_url' );
+	register_setting( 'simple_reviews_badge_options_group', 'simple_reviews_badge_cache_duration', 'intval' );
+	register_setting( 'simple_reviews_badge_options_group', 'simple_reviews_badge_review_link', 'esc_url' );
 
 	// Register schema settings.
-	register_setting( 'srb_options_group', 'srb_schema_description', 'sanitize_textarea_field' );
-	register_setting( 'srb_options_group', 'srb_schema_name', 'sanitize_text_field' );
-	register_setting( 'srb_options_group', 'srb_schema_brand', 'sanitize_text_field' );
-	register_setting( 'srb_options_group', 'srb_schema_id', 'esc_url' );
-	register_setting( 'srb_options_group', 'srb_schema_url', 'esc_url' );
+	register_setting( 'simple_reviews_badge_options_group', 'simple_reviews_badge_schema_description', 'sanitize_textarea_field' );
+	register_setting( 'simple_reviews_badge_options_group', 'simple_reviews_badge_schema_name', 'sanitize_text_field' );
+	register_setting( 'simple_reviews_badge_options_group', 'simple_reviews_badge_schema_brand', 'sanitize_text_field' );
+	register_setting( 'simple_reviews_badge_options_group', 'simple_reviews_badge_schema_id', 'esc_url' );
+	register_setting( 'simple_reviews_badge_options_group', 'simple_reviews_badge_schema_url', 'esc_url' );
 }
-add_action( 'admin_init', 'srb_register_settings' );
+add_action( 'admin_init', 'simple_reviews_badge_register_settings' );
 
 /**
  * Fetch and display Google Reviews
@@ -52,18 +52,18 @@ add_action( 'admin_init', 'srb_register_settings' );
  * @param array $atts Shortcode attributes.
  * @return string HTML output
  */
-function srb_fetch_and_display_reviews( $atts ) {
+function simple_reviews_badge_fetch_and_display_reviews( $atts ) {
 	// Parse the shortcode attributes.
 	$atts = shortcode_atts(
 		array(
-			'img_src'        => srb_get_option( 'srb_img_src' ),
+			'img_src'        => simple_reviews_badge_get_option( 'simple_reviews_badge_img_src' ),
 			'include_schema' => false,
 		),
 		$atts
 	);
 
 	// See if we already have the data cached.
-	$cached_data = srb_get_cached_data();
+	$cached_data = simple_reviews_badge_get_cached_data();
 
 	if ( false === $cached_data ) {
 		// Let's defer the loading of reviews to AJAX, so as not to hold up the page load.
@@ -71,7 +71,7 @@ function srb_fetch_and_display_reviews( $atts ) {
 		// Localize the shortcode attributes to use in the AJAX request.
 		wp_localize_script(
 			'srb-ajax-script',
-			'srb_shortcode_atts',
+			'simple_reviews_badge_shortcode_atts',
 			array(
 				'img_src'        => esc_url( $atts['img_src'] ),
 				'include_schema' => $atts['include_schema'],
@@ -82,7 +82,7 @@ function srb_fetch_and_display_reviews( $atts ) {
 		return '<div class="review-box-ajax">' . __( 'Loading reviews...', 'simple-reviews-badge' ) . '</div>';
 	} else {
 		// Generate the review HTML.
-		$output = srb_generate_review_html( $atts );
+		$output = simple_reviews_badge_generate_review_html( $atts );
 
 		// Render the review HTML.
 		return render_review_html( $output );
@@ -92,8 +92,8 @@ function srb_fetch_and_display_reviews( $atts ) {
 /**
  * Get cached review data
  */
-function srb_get_cached_data() {
-	$place_id       = srb_get_option( 'srb_place_id' );
+function simple_reviews_badge_get_cached_data() {
+	$place_id       = simple_reviews_badge_get_option( 'simple_reviews_badge_place_id' );
 
 	$transient_key = 'google_reviews_data_' . md5( $place_id );
 	$cached_data   = get_transient( $transient_key );
@@ -107,25 +107,25 @@ function srb_get_cached_data() {
  * @param array $atts Shortcode attributes.
  * @return string HTML output for the reviews
  */
-function srb_generate_review_html( $atts ) {
+function simple_reviews_badge_generate_review_html( $atts ) {
 	// Fetch review data.
-	$place_id       = srb_get_option( 'srb_place_id' );
-	$api_key        = srb_get_option( 'srb_api_key' );
-	$cache_duration = srb_get_option( 'srb_cache_duration' );
-	$review_link    = srb_get_option( 'srb_review_link' );
+	$place_id       = simple_reviews_badge_get_option( 'simple_reviews_badge_place_id' );
+	$api_key        = simple_reviews_badge_get_option( 'simple_reviews_badge_api_key' );
+	$cache_duration = simple_reviews_badge_get_option( 'simple_reviews_badge_cache_duration' );
+	$review_link    = simple_reviews_badge_get_option( 'simple_reviews_badge_review_link' );
 
 	$transient_key = 'google_reviews_data_' . md5( $place_id );
 	$cached_data   = get_transient( $transient_key );
 
 	if ( false === $cached_data ) {
 		// Fetch review data from Google Places API.
-		$api_url  = apply_filters( 'srb_before_api_request', 'https://maps.googleapis.com/maps/api/place/details/json?place_id=' . urlencode( $place_id ) . '&fields=rating,user_ratings_total&key=' . urlencode( $api_key ) );
+		$api_url  = apply_filters( 'simple_reviews_badge_before_api_request', 'https://maps.googleapis.com/maps/api/place/details/json?place_id=' . urlencode( $place_id ) . '&fields=rating,user_ratings_total&key=' . urlencode( $api_key ) );
 		$response = wp_remote_get( $api_url );
 
 		if ( is_wp_error( $response ) ) {
 			$error_message = 'Google Reviews API request failed: ' . $response->get_error_message();
-			srb_log_to_console( $error_message );
-			srb_notify_admin( 'Google Reviews API Error', $error_message );
+			simple_reviews_badge_log_to_console( $error_message );
+			simple_reviews_badge_notify_admin( 'Google Reviews API Error', $error_message );
 			return '';
 		}
 
@@ -135,8 +135,8 @@ function srb_generate_review_html( $atts ) {
 
 		if ( ! isset( $data['result'] ) ) {
 			$error_message = 'Invalid response from Google Reviews API: ' . wp_json_encode( $data );
-			srb_log_to_console( $error_message );
-			srb_notify_admin( 'Google Reviews API Invalid Response', $error_message );
+			simple_reviews_badge_log_to_console( $error_message );
+			simple_reviews_badge_notify_admin( 'Google Reviews API Invalid Response', $error_message );
 			return '';
 		}
 
@@ -162,11 +162,11 @@ function srb_generate_review_html( $atts ) {
 	// Check if Schema Markup should be included.
 	if ( filter_var( $atts['include_schema'], FILTER_VALIDATE_BOOLEAN ) ) {
 		// Fetch schema settings.
-		$schema_description = srb_get_option( 'srb_schema_description' );
-		$schema_name        = srb_get_option( 'srb_schema_name' );
-		$schema_brand       = srb_get_option( 'srb_schema_brand' );
-		$schema_id          = srb_get_option( 'srb_schema_id' );
-		$schema_url         = srb_get_option( 'srb_schema_url' );
+		$schema_description = simple_reviews_badge_get_option( 'simple_reviews_badge_schema_description' );
+		$schema_name        = simple_reviews_badge_get_option( 'simple_reviews_badge_schema_name' );
+		$schema_brand       = simple_reviews_badge_get_option( 'simple_reviews_badge_schema_brand' );
+		$schema_id          = simple_reviews_badge_get_option( 'simple_reviews_badge_schema_id' );
+		$schema_url         = simple_reviews_badge_get_option( 'simple_reviews_badge_schema_url' );
 
 		// Echo Schema Markup.
 		$response .= '<script type="application/ld+json">
@@ -190,12 +190,12 @@ function srb_generate_review_html( $atts ) {
 	}
 
 	// Get the rating word based on the aggregate rating.
-	$rating_word = apply_filters( 'srb_rating_word', srb_get_rating_word( $aggregate_rating ), $aggregate_rating );
+	$rating_word = apply_filters( 'simple_reviews_badge_rating_word', simple_reviews_badge_get_rating_word( $aggregate_rating ), $aggregate_rating );
 
 	// Loop to display stars.
 	$stars = '';
 	for ( $i = 1; $i <= 5; $i++ ) {
-		$stars .= apply_filters( 'srb_star_svg', srb_get_star_svg( $i, $aggregate_rating ), $i, $aggregate_rating );
+		$stars .= apply_filters( 'simple_reviews_badge_star_svg', simple_reviews_badge_get_star_svg( $i, $aggregate_rating ), $i, $aggregate_rating );
 	}
 
 	// Get the brand image.
@@ -205,10 +205,10 @@ function srb_generate_review_html( $atts ) {
 	$review_count_text = __( 'Based on', 'simple-reviews-badge' ) . ' <strong>' . esc_html( $review_count ) . ' ' . __( 'reviews', 'simple-reviews-badge' ) . '</strong>';
 
 	// Allow each component to be filtered.
-	$rating_word       = apply_filters( 'srb_review_word_component', '<strong class="review-word">' . esc_html( $rating_word ) . '</strong>', $aggregate_rating );
-	$stars             = apply_filters( 'srb_review_stars_component', '<div class="stars">' . $stars . '</div>', $aggregate_rating );
-	$brand_img         = apply_filters( 'srb_review_image_component', $brand_img, $atts['img_src'] );
-	$review_count_text = apply_filters( 'srb_review_count_component', '<div class="review-description">' . $review_count_text . '</div>', $review_count );
+	$rating_word       = apply_filters( 'simple_reviews_badge_review_word_component', '<strong class="review-word">' . esc_html( $rating_word ) . '</strong>', $aggregate_rating );
+	$stars             = apply_filters( 'simple_reviews_badge_review_stars_component', '<div class="stars">' . $stars . '</div>', $aggregate_rating );
+	$brand_img         = apply_filters( 'simple_reviews_badge_review_image_component', $brand_img, $atts['img_src'] );
+	$review_count_text = apply_filters( 'simple_reviews_badge_review_count_component', '<div class="review-description">' . $review_count_text . '</div>', $review_count );
 
 	// Default template structure using named placeholders.
 	$template = '<div class="review-box">
@@ -219,7 +219,7 @@ function srb_generate_review_html( $atts ) {
     </div>';
 
 	// Allow developers to modify the template structure.
-	$template = apply_filters( 'srb_review_template', $template );
+	$template = apply_filters( 'simple_reviews_badge_review_template', $template );
 
 	// Map of placeholders and corresponding component values.
 	$placeholders = array(
@@ -243,7 +243,7 @@ function srb_generate_review_html( $atts ) {
  * @param float $aggregate_rating Aggregate rating.
  * @return string
  */
-function srb_get_rating_word( $aggregate_rating ) {
+function simple_reviews_badge_get_rating_word( $aggregate_rating ) {
 	if ( 5 === $aggregate_rating ) {
 		return __( 'Excellent', 'simple-reviews-badge' );
 	} elseif ( 4.5 <= $aggregate_rating ) {
@@ -266,7 +266,7 @@ function srb_get_rating_word( $aggregate_rating ) {
  * @param float $aggregate_rating Aggregate rating.
  * @return string SVG markup
  */
-function srb_get_star_svg( $i, $aggregate_rating ) {
+function simple_reviews_badge_get_star_svg( $i, $aggregate_rating ) {
 	if ( $i <= floor( $aggregate_rating ) ) {
 		return '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
                     <path fill="#fbbf30" d="M32 12.408l-11.056-1.607-4.944-10.018-4.944 10.018-11.056 1.607 8 7.798-1.889 11.011 9.889-5.199 9.889 5.199-1.889-11.011 8-7.798z"></path>
@@ -285,15 +285,15 @@ function srb_get_star_svg( $i, $aggregate_rating ) {
 /**
  * Handle AJAX request to fetch Google Reviews.
  */
-function srb_ajax_get_reviews() {
-	check_ajax_referer( 'srb_ajax_nonce', 'nonce' );
+function simple_reviews_badge_ajax_get_reviews() {
+	check_ajax_referer( 'simple_reviews_badge_ajax_nonce', 'nonce' );
 
 	// Get the shortcode attributes from the AJAX request.
 	$img_src        = isset( $_POST['img_src'] ) ? sanitize_url( wp_unslash( $_POST['img_src'] ) ) : '';
 	$include_schema = isset( $_POST['include_schema'] ) ? filter_var( wp_unslash( $_POST['include_schema'] ), FILTER_VALIDATE_BOOLEAN ) : false;
 
 	// Output the review data.
-	$output = srb_generate_review_html(
+	$output = simple_reviews_badge_generate_review_html(
 		array(
 			'img_src'        => $img_src,
 			'include_schema' => $include_schema,
@@ -304,8 +304,8 @@ function srb_ajax_get_reviews() {
 
 	wp_die(); // Required to properly terminate AJAX requests.
 }
-add_action( 'wp_ajax_srb_get_reviews', 'srb_ajax_get_reviews' );
-add_action( 'wp_ajax_nopriv_srb_get_reviews', 'srb_ajax_get_reviews' );
+add_action( 'wp_ajax_simple_reviews_badge_get_reviews', 'simple_reviews_badge_ajax_get_reviews' );
+add_action( 'wp_ajax_nopriv_simple_reviews_badge_get_reviews', 'simple_reviews_badge_ajax_get_reviews' );
 
 /**
  * Render the review HTML output. Includes hooks for customisation and tag escaping.
@@ -319,7 +319,7 @@ function render_review_html( $output ) {
 	ob_start();
 
 	// Action hook before the review output.
-	do_action( 'srb_before_reviews_output' );
+	do_action( 'simple_reviews_badge_before_reviews_output' );
 
 	$allowed_tags = array(
 		'div'    => array(
@@ -355,7 +355,7 @@ function render_review_html( $output ) {
 	echo wp_kses( $output, $allowed_tags );
 
 	// Action hook after the review output.
-	do_action( 'srb_after_reviews_output' );
+	do_action( 'simple_reviews_badge_after_reviews_output' );
 
     // Get the output buffer contents and clean the buffer
     $final_html = ob_get_clean();
@@ -367,17 +367,17 @@ function render_review_html( $output ) {
 /**
  * Enqueue plugin styles
  */
-function srb_enqueue_styles() {
+function simple_reviews_badge_enqueue_styles() {
 	wp_enqueue_style( 'srb-styles', plugin_dir_url( __FILE__ ) . 'css/srb-styles.min.css' );
 }
-add_action( 'wp_enqueue_scripts', 'srb_enqueue_styles' );
+add_action( 'wp_enqueue_scripts', 'simple_reviews_badge_enqueue_styles' );
 
 /**
  * Enqueue plugin scripts
  */
-function srb_enqueue_ajax_scripts() {
+function simple_reviews_badge_enqueue_ajax_scripts() {
 	// We only need to enqueue the script if we don't have cached data.
-	$cached_data = srb_get_cached_data();
+	$cached_data = simple_reviews_badge_get_cached_data();
 	if ( false !== $cached_data ) {
 		return;
 	}
@@ -393,21 +393,21 @@ function srb_enqueue_ajax_scripts() {
 	// Localize the AJAX URL for use in JavaScript.
 	wp_localize_script(
 		'srb-ajax-script',
-		'srb_ajax_object',
+		'simple_reviews_badge_ajax_object',
 		array(
 			'ajax_url' => admin_url( 'admin-ajax.php' ),
-			'nonce'    => wp_create_nonce( 'srb_ajax_nonce' ), // Security nonce.
+			'nonce'    => wp_create_nonce( 'simple_reviews_badge_ajax_nonce' ), // Security nonce.
 		)
 	);
 }
-add_action( 'wp_enqueue_scripts', 'srb_enqueue_ajax_scripts' );
+add_action( 'wp_enqueue_scripts', 'simple_reviews_badge_enqueue_ajax_scripts' );
 
 /**
  * Log errors to the browser console.
  *
  * @param string $message Error message.
  */
-function srb_log_to_console( $message ) {
+function simple_reviews_badge_log_to_console( $message ) {
 	echo '<script>console.error("' . esc_js( $message ) . '");</script>';
 }
 
@@ -417,7 +417,7 @@ function srb_log_to_console( $message ) {
  * @param string $subject Email subject.
  * @param string $message Email message.
  */
-function srb_notify_admin( $subject, $message ) {
+function simple_reviews_badge_notify_admin( $subject, $message ) {
 	$admin_email   = get_option( 'admin_email' );
 	$email_subject = '[' . get_bloginfo( 'name' ) . '] ' . $subject;
 	$email_message = 'An issue has occurred with the Simple Reviews Badge plugin: ' . "\r\n\r\n" . $message;
