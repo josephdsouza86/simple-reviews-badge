@@ -12,13 +12,13 @@ jQuery( document ).ready(
 		// Make the AJAX request.
 		$.ajax(
 			{
-				url: grb_ajax_object.ajax_url,
+				url: srb_ajax_object.ajax_url,
 				type: 'POST',
 				data: {
-					action: 'grb_get_reviews',
-					nonce: grb_ajax_object.nonce,
-					img_src: grb_shortcode_atts.img_src,
-					include_schema: grb_shortcode_atts.include_schema
+					action: 'srb_get_reviews',
+					nonce: srb_ajax_object.nonce,
+					img_src: srb_shortcode_atts.img_src,
+					include_schema: srb_shortcode_atts.include_schema
 				},
 				success: function (response) {
 					// Replace the placeholder with the fetched reviews.

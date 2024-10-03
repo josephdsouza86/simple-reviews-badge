@@ -50,42 +50,42 @@ You can modify the plugin’s behaviour by using WordPress filters and actions.
 
 ### Filters
 
-`grb_rating_word`: Filter the word representing the rating (e.g., 'Excellent', 'Great').
+`srb_rating_word`: Filter the word representing the rating (e.g., 'Excellent', 'Great').
 
 ```
-add_filter( 'grb_rating_word', function( $rating_word, $aggregate_rating ) {
+add_filter( 'srb_rating_word', function( $rating_word, $aggregate_rating ) {
     return $aggregate_rating >= 4 ? 'Superb' : $rating_word;
 }, 10, 2 );
 ```
 
-`grb_review_stars_component`: Modify the HTML for the stars component.
+`srb_review_stars_component`: Modify the HTML for the stars component.
 
 ```
-add_filter( 'grb_review_stars_component', function( $stars, $aggregate_rating ) {
+add_filter( 'srb_review_stars_component', function( $stars, $aggregate_rating ) {
     return '<div class="custom-stars">' . $stars . '</div>';
 }, 10, 2 );
 ```
 
-`grb_review_image_component`: Modify the image used in the badge.
+`srb_review_image_component`: Modify the image used in the badge.
 
 ```
-add_filter( 'grb_review_image_component', function( $image, $img_src ) {
+add_filter( 'srb_review_image_component', function( $image, $img_src ) {
     return '<img src="' . esc_url( $img_src ) . '" class="custom-review-logo">';
 }, 10, 2 );
 ```
 
-`grb_review_template`: Override the entire HTML structure of the badge.
+`srb_review_template`: Override the entire HTML structure of the badge.
 
 ```
-add_filter( 'grb_review_template', function( $template ) {
+add_filter( 'srb_review_template', function( $template ) {
     return '<div class="custom-review-box">{image}{rating_word}{stars}{review_count}</div>';
 });
 ```
 
 ### Actions
 
-`grb_before_reviews_output`: Triggered before the review data is output.
-`grb_after_reviews_output`: Triggered after the review data is output.
+`srb_before_reviews_output`: Triggered before the review data is output.
+`srb_after_reviews_output`: Triggered after the review data is output.
 
 ## Error Handling
 
@@ -97,11 +97,11 @@ If the Google Reviews API request fails or returns an invalid response, the plug
 ## AJAX Integration
 The plugin uses AJAX to load the reviews in the background for better performance. You can modify the AJAX behaviour using:
 
-- AJAX action hooks: `grb_get_reviews`
+- AJAX action hooks: `srb_get_reviews`
 - JS script enqueue: Enqueue your custom JavaScript to modify the behaviour of the plugin.
 
 ## Styling
-To customise the appearance of the badge, modify the CSS file located in `css/grb-styles.min.css` or enqueue additional styles in your theme.
+To customise the appearance of the badge, modify the CSS file located in `css/srb-styles.min.css` or enqueue additional styles in your theme.
 
 ```
 .custom-review-box {
