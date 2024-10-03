@@ -306,7 +306,7 @@ function simple_reviews_badge_ajax_get_reviews() {
 	);
 
 	// Escaping is handled in the render_review_html function.
-	echo render_review_html( $output );
+	render_review_html( $output, true );
 
 	wp_die(); // Required to properly terminate AJAX requests.
 }
@@ -319,55 +319,39 @@ add_action( 'wp_ajax_nopriv_simple_reviews_badge_get_reviews', 'simple_reviews_b
  * @param string $output Review HTML output.
  * @return void
  */
-function render_review_html( $output ) {
+function render_review_html( $output, $echo_html = false ) {
 	$final_html = '';
 
-	ob_start();
+	// Conditionally start output buffering if $echo_html is false.
+	if ( ! $echo_html ) {
+		ob_start();
+	}
 
 	// Action hook before the review output.
 	do_action( 'simple_reviews_badge_before_reviews_output' );
 
-	$allowed_tags = array(
-		'div'    => array(
-			'class' => array(),
-		),
-		'a'      => array(
-			'href'   => array(),
-			'class'  => array(),
-			'target' => array(),
-		),
-		'strong' => array(
-			'class' => array(),
-		),
-		'img'    => array(
-			'src'   => array(),
-			'alt'   => array(),
-			'class' => array(),
-		),
-		'svg'    => array(
-			'version' => array(),
-			'xmlns'   => array(),
-			'width'   => array(),
-			'height'  => array(),
-			'viewBox' => array(),
-			'viewbox' => array(),
-		),
-		'path'   => array(
-			'fill' => array(),
-			'd'    => array(),
-		),
-	);
+    $allowed_tags = array(
+        'div'    => array( 'class' => array() ),
+        'a'      => array( 'href' => array(), 'class' => array(), 'target' => array() ),
+        'strong' => array( 'class' => array() ),
+        'img'    => array( 'src' => array(), 'alt' => array(), 'class' => array() ),
+        'svg'    => array( 'version' => array(), 'xmlns' => array(), 'width' => array(), 'height' => array(), 'viewBox' => array(), 'viewbox' => array() ),
+        'path'   => array( 'fill' => array(), 'd' => array() ),
+    );
 
 	echo wp_kses( $output, $allowed_tags );
 
 	// Action hook after the review output.
 	do_action( 'simple_reviews_badge_after_reviews_output' );
 
-    // Get the output buffer contents and clean the buffer
-    $final_html = ob_get_clean();
+    // If output buffering was started, capture and return the final HTML.
+	if ( ! $echo_html ) {
+        $final_html = ob_get_clean();  // Get the buffered content and clean the buffer.
+        return $final_html;
+    }
 
     // Return the captured HTML
-    return $final_html;
+    return null;
 }
 
 /**
