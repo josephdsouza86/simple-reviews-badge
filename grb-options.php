@@ -19,7 +19,7 @@ function grb_get_default_options() {
 	return array(
 		'grb_place_id'           => '',
 		'grb_api_key'            => '',
-		'grb_img_src'            => 'https://cdn.trustindex.io/assets/platform/Google/logo.svg',
+		'grb_img_src'            => esc_url( plugin_dir_url( __FILE__ ) . 'img/logo.svg' ),
 		'grb_cache_duration'     => HOUR_IN_SECONDS,
 		'grb_schema_description' => '',
 		'grb_schema_name'        => '',

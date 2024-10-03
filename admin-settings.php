@@ -67,8 +67,8 @@ function grb_settings_page() {
 					<tr valign="top">
 						<th scope="row"><?php esc_html_e( 'Review Badge Image URL', 'simple-reviews-badge' ); ?></th>
 						<td>
-							<input type="url" name="grb_img_src" value="<?php echo esc_url( grb_get_option( 'grb_img_src' ) ); ?>" placeholder="e.g., https://cdn.trustindex.io/assets/platform/Google/logo.svg" required />
-							<p class="description"><?php esc_html_e( 'Enter the URL of the image for the Google Review Badge.', 'simple-reviews-badge' ); ?></p>
+							<input type="url" name="grb_img_src" value="<?php echo esc_url( grb_get_option( 'grb_img_src' ) ); ?>" placeholder="e.g., https://example.com/Google/logo.svg" required />
+							<p class="description"><?php esc_html_e( 'Enter the URL of the image for the Google Review Badge. Default: ', 'simple-reviews-badge' ) ?><?php echo esc_url( plugin_dir_url( __FILE__ ) . 'img/logo.svg' ) ?></p>
 						</td>
 					</tr>
 					<tr valign="top">
