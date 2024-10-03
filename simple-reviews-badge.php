@@ -9,6 +9,9 @@
  * License: GPL2
  * Text Domain: simple-reviews-badge
  *
+ * GitHub Plugin URI: https://github.com/josephdsouza86/alphalabs-utility-pack
+ * GitHub Branch:     master
+ * 
  * @package Simple_Reviews_Badge
  */
 
