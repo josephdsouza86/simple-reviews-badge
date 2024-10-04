@@ -20,7 +20,7 @@
 
 You can display the Simple Reviews Badge on any page or post by using the following shortcode:
 
-`[display_reviews]`
+`[simple_reviews_badge_display_reviews]`
 
 The shortcode will render a Simple Reviews Badge with stars, aggregate ratings, and a review count.
 

@@ -32,7 +32,7 @@ require_once plugin_dir_path( __FILE__ ) . 'srb-options.php';
 require_once plugin_dir_path( __FILE__ ) . 'admin-settings.php';
 
 // Register shortcode to display the reviews.
-add_shortcode( 'display_reviews', 'simple_reviews_badge_fetch_and_display_reviews' );
+add_shortcode( 'simple_reviews_badge_display_reviews', 'simple_reviews_badge_fetch_and_display' );
 
 /**
  * Register plugin settings
@@ -41,16 +41,16 @@ function simple_reviews_badge_register_settings() {
 	// Register basic settings.
 	register_setting( 'simple_reviews_badge_options_group', 'simple_reviews_badge_place_id', 'sanitize_text_field' );
 	register_setting( 'simple_reviews_badge_options_group', 'simple_reviews_badge_api_key', 'sanitize_text_field' );
-	register_setting( 'simple_reviews_badge_options_group', 'simple_reviews_badge_img_src', 'esc_url' );
+	register_setting( 'simple_reviews_badge_options_group', 'simple_reviews_badge_img_src', 'esc_url_raw' );
 	register_setting( 'simple_reviews_badge_options_group', 'simple_reviews_badge_cache_duration', 'intval' );
-	register_setting( 'simple_reviews_badge_options_group', 'simple_reviews_badge_review_link', 'esc_url' );
+	register_setting( 'simple_reviews_badge_options_group', 'simple_reviews_badge_review_link', 'esc_url_raw' );
 
 	// Register schema settings.
 	register_setting( 'simple_reviews_badge_options_group', 'simple_reviews_badge_schema_description', 'sanitize_textarea_field' );
 	register_setting( 'simple_reviews_badge_options_group', 'simple_reviews_badge_schema_name', 'sanitize_text_field' );
 	register_setting( 'simple_reviews_badge_options_group', 'simple_reviews_badge_schema_brand', 'sanitize_text_field' );
-	register_setting( 'simple_reviews_badge_options_group', 'simple_reviews_badge_schema_id', 'esc_url' );
-	register_setting( 'simple_reviews_badge_options_group', 'simple_reviews_badge_schema_url', 'esc_url' );
+	register_setting( 'simple_reviews_badge_options_group', 'simple_reviews_badge_schema_id', 'esc_url_raw' );
+	register_setting( 'simple_reviews_badge_options_group', 'simple_reviews_badge_schema_url', 'esc_url_raw' );
 }
 add_action( 'admin_init', 'simple_reviews_badge_register_settings' );
 
@@ -60,7 +60,7 @@ add_action( 'admin_init', 'simple_reviews_badge_register_settings' );
  * @param array $atts Shortcode attributes.
  * @return string HTML output
  */
-function simple_reviews_badge_fetch_and_display_reviews( $atts ) {
+function simple_reviews_badge_fetch_and_display( $atts ) {
 	// Parse the shortcode attributes.
 	$atts = shortcode_atts(
 		array(
@@ -93,7 +93,7 @@ function simple_reviews_badge_fetch_and_display_reviews( $atts ) {
 		$output = simple_reviews_badge_generate_review_html( $atts );
 
 		// Render the review HTML.
-		return render_review_html( $output );
+		return simple_reviews_badge_render_review_html( $output );
 	}
 }
 
@@ -103,7 +103,7 @@ function simple_reviews_badge_fetch_and_display_reviews( $atts ) {
 function simple_reviews_badge_get_cached_data() {
 	$place_id       = simple_reviews_badge_get_option( 'simple_reviews_badge_place_id' );
 
-	$transient_key = 'google_reviews_data_' . md5( $place_id );
+	$transient_key = 'simple_reviews_badge_data_' . md5( $place_id );
 	$cached_data   = get_transient( $transient_key );
 
 	return $cached_data;
@@ -122,7 +122,7 @@ function simple_reviews_badge_generate_review_html( $atts ) {
 	$cache_duration = simple_reviews_badge_get_option( 'simple_reviews_badge_cache_duration' );
 	$review_link    = simple_reviews_badge_get_option( 'simple_reviews_badge_review_link' );
 
-	$transient_key = 'google_reviews_data_' . md5( $place_id );
+	$transient_key = 'simple_reviews_badge_data_' . md5( $place_id );
 	$cached_data   = get_transient( $transient_key );
 
 	if ( false === $cached_data ) {
@@ -308,8 +308,8 @@ function simple_reviews_badge_ajax_get_reviews() {
 		)
 	);
 
-	// Escaping is handled in the render_review_html function.
-	render_review_html( $output, true );
+	// Escaping is handled in the simple_reviews_badge_render_review_html function.
+	simple_reviews_badge_render_review_html( $output, true );
 
 	wp_die(); // Required to properly terminate AJAX requests.
 }
@@ -322,7 +322,7 @@ add_action( 'wp_ajax_nopriv_simple_reviews_badge_get_reviews', 'simple_reviews_b
  * @param string $output Review HTML output.
  * @return void
  */
-function render_review_html( $output, $echo_html = false ) {
+function simple_reviews_badge_render_review_html( $output, $echo_html = false ) {
 	$final_html = '';
 
 	// Conditionally start output buffering if $echo_html is false.
