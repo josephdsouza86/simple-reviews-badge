@@ -4,9 +4,11 @@ Tags: google, reviews, badge, ratings
 Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.0
-Stable tag: 1.0
+Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
+
+Show your Google rating on your website with a simple badge, including stars and number of reviews.
 
 == Description ==
 Simple Reviews Badge is a lightweight plugin that displays aggregate Google Reviews and star ratings in a customisable badge format. It uses the Google Places API to fetch and display reviews with schema markup support for better SEO. 
@@ -38,9 +40,9 @@ Yes, the plugin uses the Google Places API to fetch review data. Please refer to
 1. Example of the Simple Reviews Badge display.
 
 == Changelog ==
-= 1.0 =
+= 1.0.0 =
 * Initial release of Simple Reviews Badge plugin.
 
 == Upgrade Notice ==
-= 1.0 =
+= 1.0.0 =
 Initial release of the plugin.

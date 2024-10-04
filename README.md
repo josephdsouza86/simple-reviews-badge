@@ -139,12 +139,12 @@ Refer to the [Google Places API documentation](https://developers.google.com/pla
 ## Plugin Information
 
 - **Plugin Name**: Simple Reviews Badge
-- **Version**: 1.0
+- **Version**: 1.0.0
 - **Author**: [Alpha Labs](https://alphalabs.net)
 - **License**: GPL2
 - **Text Domain**: simple-reviews-badge
 
 ## Changelog
-1.0
+1.0.0
 Initial release of the Simple Reviews Badge plugin.
 For support and further customisation, visit Alpha Labs.
