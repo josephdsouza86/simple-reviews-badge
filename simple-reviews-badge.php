@@ -3,7 +3,7 @@
  * Plugin Name: Simple Reviews Badge
  * Plugin URI: https://alphalabs.net/simple-reviews-badge/
  * Description: Displays a simple Simple Reviews Badge with aggregate ratings and stars.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: Alpha Labs
  * Author URI: https://alphalabs.net/
  * License: GPL2
@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Define plugin constants.
 if ( ! defined( 'SIMPLE_REVIEWS_BADGE_VERSION' ) ) {
-    define( 'SIMPLE_REVIEWS_BADGE_VERSION', '1.0.0' );
+    define( 'SIMPLE_REVIEWS_BADGE_VERSION', '1.0.1' );
 }
 
 // Include the admin settings page.
