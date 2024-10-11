@@ -20,7 +20,10 @@
 
 You can display the Simple Reviews Badge on any page or post by using the following shortcode:
 
-`[simple_reviews_badge_display_reviews]`
+`[simple_reviews_badge_display_reviews include_schema="true" img_src="./logo.png"]`
+
+- include_schema (default: false): Whether to include a product schema describing your review count and average score. Enabling this will add a review star rating to your Google search results on the page your shortcode is included.
+- img_src (default: see settings page): Override the main image from the settings page for a single reviews badge instance
 
 The shortcode will render a Simple Reviews Badge with stars, aggregate ratings, and a review count.
 

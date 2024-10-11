@@ -20,6 +20,29 @@ Simple Reviews Badge is a lightweight plugin that displays aggregate Google Revi
 * AJAX-based loading for better performance.
 * Filterable and customisable HTML structure.
 
+## Usage
+
+You can display the Simple Reviews Badge on any page or post by using the following shortcode:
+
+`[simple_reviews_badge_display_reviews include_schema="true" img_src="./logo.png"]`
+
+- include_schema (default: false): Whether to include a product schema describing your review count and average score. Enabling this will add a review star rating to your Google search results on the page your shortcode is included.
+- img_src (default: see settings page): Override the main image from the settings page for a single reviews badge instance
+
+The shortcode will render a Simple Reviews Badge with stars, aggregate ratings, and a review count.
+
+## Settings
+
+To configure the plugin, go to Settings > Simple Reviews Badge in the WordPress admin panel. Here are the available settings:
+
+### Basic Settings
+
+1. Google Place ID: The Place ID of your business location on Google.
+1. Google API Key: Your Google Places API key.
+1. Review Badge Image URL: The image displayed alongside the reviews (e.g., Google logo).
+1. Cache Duration: How long (in seconds) to cache the review data before fetching fresh data.
+1. Google Review Link: A link to the reviews page on Google (used in the badge).
+
 == Installation ==
 1. Upload the plugin files to the `/wp-content/plugins/simple-reviews-badge/` directory, or install the plugin through the WordPress plugins screen directly.
 2. Activate the plugin through the 'Plugins' screen in WordPress.

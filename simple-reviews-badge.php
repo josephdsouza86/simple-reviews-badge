@@ -239,7 +239,7 @@ function simple_reviews_badge_generate_review_html( $atts ) {
 	);
 
 	// Replace the placeholders with actual values.
-	$response = str_replace( array_keys( $placeholders ), array_values( $placeholders ), $template );
+	$response .= str_replace( array_keys( $placeholders ), array_values( $placeholders ), $template );
 
 	// Return the final output.
 	return $response;
@@ -340,6 +340,7 @@ function simple_reviews_badge_render_review_html( $output, $echo_html = false ) 
         'img'    => array( 'src' => array(), 'alt' => array(), 'class' => array() ),
         'svg'    => array( 'version' => array(), 'xmlns' => array(), 'width' => array(), 'height' => array(), 'viewBox' => array(), 'viewbox' => array() ),
         'path'   => array( 'fill' => array(), 'd' => array() ),
+		'script' => array( 'type' => array() ),
     );
 
 	echo wp_kses( $output, $allowed_tags );
