@@ -95,7 +95,9 @@ add_filter( 'simple_reviews_badge_review_image_component', function( $image, $im
 
 ```
 add_filter( 'simple_reviews_badge_review_template', function( $template ) {
-    return '<div class="custom-review-box">{image}{rating_word}{stars}{review_count}</div>';
+    return '<div class="review-box">
+        <a href="{review_link}" class="review-link" target="_blank">{image}{rating_word}{stars}{review_count}</a>
+    </div>';
 });
 ```
 
@@ -148,6 +150,13 @@ Refer to the [Google Places API documentation](https://developers.google.com/pla
 - **Text Domain**: simple-reviews-badge
 
 ## Changelog
+1.0.2
+Added ajax admin option
+Fixed ajax attrs bug
+
+1.0.1
+Fixed bugs
+
 1.0.0
 Initial release of the Simple Reviews Badge plugin.
 For support and further customisation, visit Alpha Labs.

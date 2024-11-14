@@ -9,6 +9,9 @@ jQuery( document ).ready(
 		// Get the review placeholder element.
 		var reviewContainer = $( '.review-box-ajax' );
 
+		var data_img_src = reviewContainer.data( 'img-src' );
+		var data_include_schema = reviewContainer.data( 'include-schema' );
+
 		// Make the AJAX request.
 		$.ajax(
 			{
@@ -17,8 +20,8 @@ jQuery( document ).ready(
 				data: {
 					action: 'simple_reviews_badge_get_reviews',
 					nonce: simple_reviews_badge_ajax_object.nonce,
-					img_src: simple_reviews_badge_shortcode_atts.img_src,
-					include_schema: simple_reviews_badge_shortcode_atts.include_schema
+					img_src: data_img_src,
+					include_schema: data_include_schema
 				},
 				success: function (response) {
 					// Replace the placeholder with the fetched reviews.

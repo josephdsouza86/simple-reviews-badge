@@ -51,6 +51,9 @@ function simple_reviews_badge_register_settings() {
 	register_setting( 'simple_reviews_badge_options_group', 'simple_reviews_badge_schema_brand', 'sanitize_text_field' );
 	register_setting( 'simple_reviews_badge_options_group', 'simple_reviews_badge_schema_id', 'esc_url_raw' );
 	register_setting( 'simple_reviews_badge_options_group', 'simple_reviews_badge_schema_url', 'esc_url_raw' );
+
+	// Register AJAX settings.
+	register_setting( 'simple_reviews_badge_options_group', 'simple_reviews_badge_use_ajax', 'filter_var' );
 }
 add_action( 'admin_init', 'simple_reviews_badge_register_settings' );
 
@@ -72,22 +75,13 @@ function simple_reviews_badge_fetch_and_display( $atts ) {
 
 	// See if we already have the data cached.
 	$cached_data = simple_reviews_badge_get_cached_data();
+	
+	// Check if AJAX should be used.
+	$simple_reviews_badge_use_ajax = simple_reviews_badge_get_option( 'simple_reviews_badge_use_ajax' );
 
-	if ( false === $cached_data ) {
-		// Let's defer the loading of reviews to AJAX, so as not to hold up the page load.
-
-		// Localize the shortcode attributes to use in the AJAX request.
-		wp_localize_script(
-			'simple-review-badge-ajax-script',
-			'simple_reviews_badge_shortcode_atts',
-			array(
-				'img_src'        => esc_url( $atts['img_src'] ),
-				'include_schema' => $atts['include_schema'],
-			)
-		);
-
-		// Return a placeholder that will be replaced by AJAX.
-		return '<div class="review-box-ajax">' . __( 'Loading reviews...', 'simple-reviews-badge' ) . '</div>';
+	if ( $simple_reviews_badge_use_ajax && false === $cached_data ) {
+		// Let's defer the loading of reviews to AJAX, so as not to hold up the page load. Set values for atts$ to data attributes.
+		return '<div class="review-box-ajax" data-img-src="' . esc_url( $atts['img_src'] ) . '" data-include-schema="' . esc_attr( $atts['include_schema'] ) . '">' . __( 'Loading reviews...', 'simple-reviews-badge' ) . '</div>';;
 	} else {
 		// Generate the review HTML.
 		$output = simple_reviews_badge_generate_review_html( $atts );
@@ -370,6 +364,12 @@ add_action( 'wp_enqueue_scripts', 'simple_reviews_badge_enqueue_styles' );
  * Enqueue plugin scripts
  */
 function simple_reviews_badge_enqueue_ajax_scripts() {
+	// Check if AJAX should be used.
+	$simple_reviews_badge_use_ajax = simple_reviews_badge_get_option( 'simple_reviews_badge_use_ajax' );
+	if ( !$simple_reviews_badge_use_ajax ) {
+		return;
+	}
+
 	// We only need to enqueue the script if we don't have cached data.
 	$cached_data = simple_reviews_badge_get_cached_data();
 	if ( false !== $cached_data ) {

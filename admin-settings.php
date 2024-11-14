@@ -117,6 +117,12 @@ function simple_reviews_badge_settings_page() {
 							<p class="description"><?php esc_html_e( 'Enter the URL for the schema markup.', 'simple-reviews-badge' ); ?></p>
 						</td>
 					</tr>
+					<tr valign="top">
+						<th scope="row"><?php esc_html_e( 'Use AJAX', 'simple-reviews-badge' ); ?></th>
+						<td>
+							<input type="checkbox" name="simple_reviews_badge_use_ajax" value="1" <?php checked( simple_reviews_badge_get_option( 'simple_reviews_badge_use_ajax' ) ); ?> />
+							<p class="description"><?php esc_html_e( 'Enable AJAX for fetching reviews. This will improve page load times when not using caching.', 'simple-reviews-badge' ); ?></p>
+						</td>
 				</table>
 				<?php submit_button(); ?>
 			</form>

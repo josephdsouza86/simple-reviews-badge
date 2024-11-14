@@ -27,6 +27,7 @@ function simple_reviews_badge_get_default_options() {
 		'simple_reviews_badge_schema_id'          => '',
 		'simple_reviews_badge_schema_url'         => '',
 		'simple_reviews_badge_review_link'        => '',
+		'simple_reviews_badge_use_ajax'   		  => false,
 	);
 }
 
